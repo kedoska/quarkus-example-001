@@ -1,10 +1,14 @@
 package apps.api;
 import java.util.List;
+import java.util.concurrent.CompletionStage;
 
 import org.eclipse.microprofile.graphql.Description;
 import org.eclipse.microprofile.graphql.GraphQLApi;
 import org.eclipse.microprofile.graphql.Mutation;
 import org.eclipse.microprofile.graphql.Query;
+import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Emitter;
+import org.eclipse.microprofile.reactive.messaging.Incoming;
 
 import domain.entities.Room;
 import domain.repositories.RoomRepository;
@@ -27,6 +31,10 @@ public class RoomResource {
     @Inject
     RoomRepository roomRepository;
 
+    @Inject
+    @Channel("room-create")
+    Emitter<Room> roomEmitter;
+
     @Query("allRooms")
     @Description("Get all rooms")
     @GET
@@ -38,8 +46,16 @@ public class RoomResource {
     @POST
     @Transactional
     public Room addRoom(Room room) {
-        roomRepository.persist(room);
+        // roomRepository.persist(room);
+        CompletionStage<Void> ack = roomEmitter.send(room);
         return room;
+    }
+
+    @Incoming("room-create")
+    @Transactional
+    public void store(Room room) {
+        room.name = room.name.toUpperCase();
+        room.persist();
     }
 
     @Mutation

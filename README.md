@@ -9,6 +9,7 @@ If you want to learn more about Quarkus, please visit its website: https://quark
 - [hibernate-orm-panache](https://quarkus.io/guides/hibernate-orm-panache#first-an-example)
 - [openapi-swaggerui](https://quarkus.io/guides/openapi-swaggerui)
 - [smallrye-graphql](https://quarkus.io/guides/smallrye-graphql#introspect)
+- [quarkus-messaging-kafka](https://quarkus.io/guides/kafka#blocking-processing)
 
 
 ## Running the application in dev mode
@@ -18,9 +19,9 @@ You can run your application in dev mode that enables live coding using:
 ./mvnw compile quarkus:dev
 ```
 
-Run the database
+Run the infra
 ```shell script
-docker run --name my_db -e POSTGRES_USER=username -e POSTGRES_PASSWORD=password -e POSTGRES_DB=my_db -p 5432:5432 postgres
+docker-compose up -d
 ```
 
 ### Access the UIs
